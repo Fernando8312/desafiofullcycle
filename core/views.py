@@ -15,8 +15,11 @@ def postar(request):
         txt_tag = request.POST.get('tag')
         #print(titulo, conteudo, txt_tag)
 
-        tag = Tags(name=txt_tag)
-        tag.save()
+        id = Tags.objects.filter(name__iexact=txt_tag)
+        if not id:
+            tag = Tags(name=txt_tag)
+            tag.save()
+            
 
         postagem = Post(
             title = titulo,
@@ -29,14 +32,10 @@ def postar(request):
 
         id = Tags.objects.filter(name__iexact=txt_tag)
         for i in id:
-            print(i)
             postagem.tags.add(i)
             postagem.save()
         
-        posts = {
-            'dados': Post.objects.all().order_by('-created_at'),
-        }
-        
+
         return redirect("/blog")
     
    
